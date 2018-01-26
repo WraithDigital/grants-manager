@@ -1,0 +1,12 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV['RAILS_MAX_THREADS'] || 5 %>
+  prepared_statements: false
+
+development:
+  <<: *default
+  database: grants_manager_dev
+
+production:
+  <<: *default

@@ -1,0 +1,108 @@
+<%= render 'shared/flash' %>
+
+<% if current_user.admin? %>
+  <div class="input-group">
+    <%= f.select :user_id, User.where(admin: false).map{|u| [u.email, u.id]}, {include_blank: '&mdash; User &mdash;'.html_safe}, required: true %>
+  </div>
+<% end %>
+
+<div class="input-group">
+  <%= f.select :agency_id, Agency.all.map{|a| [a.shortname, a.id]}, {include_blank: '&mdash; Agency &mdash;'.html_safe}, required: true %>
+</div>
+
+<div class="input-group input-group-selectize">
+  <%= f.select :applicant_type, options_for_select(ApplicantType.all.map{|a| [a.name, a.id]}, @grant.applicant_types.pluck(:id)), {include_blank: '&mdash; Applicant Type &mdash;'.html_safe}, {:multiple => true, class: 'multi-applicant'} %>
+</div>
+
+<div class="input-group input-group-selectize">
+  <%= f.select :residency, options_for_select(@iso_country_codes.map{|a| [a.name, a.alpha3]}, @grant.residency.try(:split, ",")), {include_blank: '&mdash; Residency or Citizenship &mdash;'.html_safe}, {:multiple => true, class: 'multi-country'} %>
+</div>
+
+<div class="input-group input-group-selectize">
+  <%= f.select :activity_location, options_for_select(@iso_country_codes.map{|a| [a.name, a.alpha3]}, @grant.activity_location.try(:split, ",")), {include_blank: '&mdash; Activity Location &mdash;'.html_safe}, {:multiple => true, class: 'multi-country'} %>
+</div>
+
+<div class="input-group">
+  <%= f.text_field :title, placeholder: 'Title', class: 'text' %>
+</div>
+
+<div class="input-group">
+  <%= f.text_field :url, placeholder: 'URL', class: 'text', id: 'formjs-url', required: true, :disabled => !current_user.admin? %>
+</div>
+
+<div class="input-group">
+  <%= f.text_field :sponsor, placeholder: 'Sponsor(s) - comma separated', class: 'text' %>
+</div>
+
+<div class="input-group">
+  <%= f.text_field :amount, placeholder: 'Amount', class: 'text' %>
+</div>
+
+<div class="input-group">
+  <%= f.time_zone_select :time_zone, nil, {include_blank: '&mdash; Time Zone &mdash;'.html_safe} %>
+</div>
+
+<% unless @grant.deadlines.present? %>
+  <div class="dead-main">
+    <div class="deadlines-group">
+      <span>Deadlines(s)</span>
+      <div class="input-group-deadline group" data-deadline-group="0" id="group0">
+        <div class="float-left">
+          <input name="deadline[06181982][date]" type="text" class="deadline text start-time">
+          <select name="deadline[06181982][item_due]" class="item-due">
+            <option selected="selected" value="application">Application</option>
+            <option value="email">Other</option>
+          </select>
+        </div>
+        <div>
+          <textarea name="deadline[06181982][notes]" placeholder="notes" rows="3" class="" required></textarea>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button class="button" id="add-deadline">Add Deadline</button>
+    </div>
+  </div>
+<% else %>
+  <div class="dead-main">
+    <div class="deadlines-group">
+      <span>Deadlines(s) <i>At least one deadline is required</i> </span>
+      <% @grant.deadlines.each_with_index do |deadline, i| %>
+      <%= '<hr />'.html_safe if i != 0 %>
+        <div class="input-group-deadline group" data-deadline-group="0">
+          <div class="float-left">
+            <input name="deadline[<%= i %>][date]" type="text" class="deadline text start-time" value="<%= deadline.date %>">
+            <select name="deadline[<%= i %>][item_due]" class="item-due">
+              <option <%= deadline.item_due == 'selected' ? 'selected' : '' %> value="application">Application</option>
+              <option <%= deadline.item_due == 'other' ? 'selected' : '' %> value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <textarea  name="deadline[<%= i %>][notes]" placeholder="notes" rows="3" required><%= deadline.notes %></textarea>
+            <a class="rem"><%= image_tag 'no.svg', class: 'rem-no' %></a>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div>
+      <button class="button" id="add-deadline">Add Deadline</button>
+    </div>
+  </div>
+<% end %>
+
+<div class="input-group">
+  <%= f.text_area :body, placeholder: 'Grant Description(Abstract)', class: 'text' %>
+</div>
+
+<div class="input-group">
+  <% if %w(new create).include? controller.action_name %>
+    <button class="button">Create Grant</button>
+  <% else %>
+    <% if current_user.can_update_grant?(@grant) %>
+      <button class="button">Update Grant</button>
+    <% end %>
+  <% end %>
+  <% if current_user.can_sync_grant?(@grant) %>
+    <%= link_to (@grant.dirty? ? 'Sync Grant' : 'Force Sync'), sync_grant_path(@grant), class: 'button button-green' %>
+  <% end %>
+</div>

@@ -1,0 +1,51 @@
+<div class="button-row">
+  <% if current_user.admin? %><%= link_to 'New Grant', new_grant_path, class: 'button' %><% end %>
+
+  <div class="filters">
+    <%= form_tag grants_path, method: :get, enforce_utf8: false, class: 'group' do %>
+      <%= select_tag :limit, options_for_select([20, 50, 75, 100, 200], @limit) %>
+      <%= select_tag :synced, options_for_select(['all', 'synced', 'unsynced'], @synced) %>
+    <% end %>
+  </div>
+</div>
+
+<%= render 'shared/flash' %>
+
+<%= paginate @grants %>
+
+<table class="data">
+  <thead>
+    <tr>
+      <th>RID</th>
+      <th>ID</th>
+      <th>Agency</th>
+      <th>Title</th>
+      <th>URL</th>
+      <% if current_user.admin? %><th>User</th><% end %>
+      <th class="center">Status</th>
+      <th class="center">Synced</th>
+      <th class="center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @grants.each do |grant| %>
+      <tr>
+        <td><%= grant.remote_id %></td>
+        <td><%= grant.id %></td>
+        <td><%= grant.agency.shortname %></td>
+        <td><span class="truncate"><%= grant.title? ? link_to(grant.title, edit_grant_path(grant)) : wip_marker %></span></td>
+        <td><span class="truncate"><%= link_to grant.url, grant.url, target: '_blank' %></span></td>
+        <% if current_user.admin? %><td><%= grant.user.email.truncate(10) %></td><% end %>
+        <td class="center"><%= grant.review.present? ? grant.review.status : 'queued' %></td>
+        <% if grant.review.present? && grant.review.approved? %>
+          <td class="icon"><%= grant.dirty? ? image_tag('no.svg') : image_tag('yes.svg') %></td>
+        <% else %>
+          <td class="center"><%= wip_marker %></td>
+        <% end %>
+        <td class="center"><%= link_to('edit', edit_grant_path(grant)) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @grants %>

@@ -1,0 +1,3 @@
+<%= form_with model: @agency, url: agencies_path, method: :post, local: true, class: 'slim' do |f| %>
+  <%= render 'form', f: f, button_text: 'Create Agency' %>
+<% end %>

@@ -1,0 +1,24 @@
+<%= render 'shared/flash' %>
+
+<table class="data">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Grant Name</th>
+      <th>Status</th>
+      <th>Submitted</th>
+      <th class="center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @reviews.each do |review| %>
+      <tr>
+        <td><%= review.id %></td>
+        <td><%= link_to review.grant.title, review_path(review) %></td>
+        <td><%= review.status %></td>
+        <td><%= time_ago_in_words(review.created_at) %> ago</td>
+        <td class="center"><%= link_to 'audit', review_path(review) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

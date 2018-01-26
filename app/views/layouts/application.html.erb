@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%= csrf_meta_tags %>
+
+  <title>Grants Manager</title>
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
+
+  <%= stylesheet_link_tag 'application' %>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.16/jquery.datetimepicker.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/css/selectize.min.css">
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header">
+      <div class="logo-bar group">
+        <%= link_to image_tag('logo.svg'), root_path, class: 'logo' %>
+        <% if logged_in? %><div class="user-info"><%= current_user.email %> &middot; <%= link_to 'logout', logout_path, class: 'logout' %></div><% end %>
+      </div>
+      <% if logged_in? %>
+        <ul class="menu">
+          <li><%= link_to 'Grants', grants_path, class: 'button' %></li>
+          <% if current_user.admin? %><li><%= link_to 'Agencies', agencies_path, class: 'button' %></li><% end %>
+          <% if current_user.admin? %><li><%= link_to 'Applicant Types', applicant_types_path, class: 'button' %></li><% end %>
+          <% if current_user.admin? %><li><%= link_to "Review (#{review_count})", reviews_path, class: 'button' %></li><% end %>
+        </ul>
+      <% end %>
+    </div>
+
+    <div class="main">
+      <%= yield %>
+    </div>
+  </div>
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.16/jquery.datetimepicker.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.4/js/standalone/selectize.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.8.0/parsley.min.js"></script>
+  
+  <script type="text/javascript">
+  $('.start-time').datetimepicker({
+      validateOnBlur: false,
+      format:'M d, Y',
+      timepicker: false
+    });
+  </script>
+  <%= javascript_include_tag 'application' %>
+</body>
+</html>

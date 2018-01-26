@@ -1,0 +1,31 @@
+<%= form_with model: @grant, url: grant_path(@grant), method: :patch, local: true, class: 'slim', id: 'formjs' do |f| %>
+  <%= render 'form', f: f %>
+<% end %>
+
+<div class="markdown-preview">
+  <h3 class="grant-preview">Live Preview</h3>
+  <% if current_user.author? %>
+    <div class="submit-review">
+      <% if @grant.review.blank? %>
+        <%= button_to 'Submit for review', reviews_path, method: :post, params: {grant_id: @grant.id}, class: 'button button-green' %>
+      <% elsif @grant.review.rejected? %>
+        <%= button_to 'Re-submit for review', reviews_path, method: :post, params: {grant_id: @grant.id}, class: 'button button-green' %>
+        <% if @grant.review.reviewer_notes.present? %>
+          <div class="rejection-notes">"<%= @grant.review.reviewer_notes %>"</div>
+        <% end %>
+      <% elsif @grant.review.pending? %>
+        <%= button_to 'Pending approval', '#', class: 'button button-green', disabled: true %>
+      <% elsif @grant.review.approved? %>
+        <%= button_to 'Approved', '#', class: 'button button-green', disabled: true %>
+      <% end %>
+    </div>
+  <% end %>
+  <div class="html">
+    <% if @preview.present? %>
+      <%= @preview.html_safe %>
+    <% else %>
+      <p>A preview of the grant will appear here as you are editing.</p>
+      <p>Learn about writing markdown <a href="https://beegit.com/markdown-cheat-sheet" target="_blank">here</a>.</p>
+    <% end %>
+  </div>
+</div>

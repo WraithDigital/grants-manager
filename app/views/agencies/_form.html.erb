@@ -1,0 +1,13 @@
+<%= render 'shared/flash' %>
+
+<div class="input-group">
+  <%= f.text_field :name, placeholder: 'Name', class: 'text', required: true %>
+</div>
+
+<div class="input-group">
+  <%= f.text_field :shortname, placeholder: 'Shortname (abbreviation)', class: 'text', required: true %>
+</div>
+
+<div class="input-group">
+  <button class="button"><%= button_text %></button>
+</div>

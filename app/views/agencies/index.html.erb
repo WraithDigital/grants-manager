@@ -1,0 +1,26 @@
+<div class="button-row">
+  <%= link_to 'New Agency', new_agency_path, class: 'button' %>
+</div>
+
+<%= render 'shared/flash' %>
+
+<table class="data">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Shortname</th>
+      <th>Name</th>
+      <th class="center">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @agencies.each do |agency| %>
+      <tr>
+        <td><%= agency.id %></td>
+        <td><%= link_to agency.shortname, edit_agency_path(agency) %></td>
+        <td><%= link_to agency.name, edit_agency_path(agency) %></td>
+        <td class="center"><%= link_to('edit', edit_agency_path(agency)) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

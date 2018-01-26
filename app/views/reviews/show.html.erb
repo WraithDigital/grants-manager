@@ -1,0 +1,79 @@
+<div class="grant-review">
+  <h2><%= @review.grant.title %></h2><br>
+  <div class="">
+    <table class="data">
+      <tr>
+        <td><strong>Agency</strong></td>
+        <td><%= @review.grant.agency.shortname %></td>
+      </tr>
+      <tr>
+        <td><strong>Time Zone</strong></td>
+        <td><%= @review.grant.time_zone %></td>
+      </tr>
+      <tr>
+        <td><strong>Sponsor(s)</strong></td>
+        <td><%= @review.grant.sponsor %></td>
+      </tr>
+      <tr>
+        <td><strong>Amount</strong></td>
+        <td><%= @review.grant.amount %></td>
+      </tr>
+      <tr>
+        <td><strong>Applicant Type</strong></td>
+        <td>
+          <% @review.grant.applicant_types.each do |type| %>
+            <%= type.name %>
+          <% end %>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Residency</strong></td>
+        <td><%= @review.grant.residency %></td>
+      </tr>
+      <tr>
+        <td><strong>Activity Location</strong></td>
+        <td><%= @review.grant.activity_location %></td>
+      </tr>
+    </table><br>
+
+    <span><strong>Deadline(s)</strong></span>
+    <table class="data">
+      <thead>
+        <th>Date</th>
+        <th>Item Due</th>
+        <th>Notes</th>
+      </thead>
+      <tbody>
+        <% @review.grant.deadlines.each do |deadline| %>
+          <tr>
+            <td><%= deadline.date %></td>
+            <td><%= deadline.item_due %></td>
+            <td><%= deadline.notes %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table><br>
+  </div>
+  <h4><%= link_to @review.grant.url, @review.grant.url, target: '_blank' %></h4>
+</div>
+
+<div class="markdown-preview">
+  <h3 class="grant-preview">Live Preview</h3>
+  <div class="submit-review">
+    <% if @review.pending? %>
+      <%= button_to 'Approve and Sync', review_approve_path, method: :patch, class: 'button button-green' %>
+      <%= button_to 'Reject with Notes', review_reject_path, method: :patch, class: 'button button-red button-reject' %>
+    <% elsif @review.rejected? %>
+      <%= button_to 'Pending rewrite', '#', disabled: true, class: 'button button-green' %>
+    <% elsif @review.approved? %>
+      <%= button_to 'Approved', '#', disabled: true, class: 'button button-green' %>
+    <% end %>
+  </div>
+  <div class="html">
+    <% if @preview.present? %>
+      <%= @preview.html_safe %>
+    <% else %>
+      <p>This description has no content...</p>
+    <% end %>
+  </div>
+</div>

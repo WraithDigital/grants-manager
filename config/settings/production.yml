@@ -1,0 +1,4 @@
+api:
+  key: '<%= ENV['API_KEY'] %>'
+gtc:
+  api_key: '<%= ENV['GTC_API_KEY'] %>'

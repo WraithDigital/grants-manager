@@ -1,0 +1,3 @@
+<%= form_with model: @applicant_type, url: applicant_types_path, method: :post, local: true, class: 'slim' do |f| %>
+  <%= render 'form', f: f, button_text: 'Create Applicant Type' %>
+<% end %>
